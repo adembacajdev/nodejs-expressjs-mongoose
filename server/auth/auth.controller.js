@@ -2,49 +2,50 @@ const jwt = require('jsonwebtoken');
 const httpStatus = require('http-status');
 const APIError = require('../helpers/APIError');
 const config = require('../../config/config');
+const User = require('../user/user.model');
+const sha256 = require('crypto-js/sha256');
+const PASSWORD_SALT = 'palidhje123';
+const JWT_SECRET = 'lidhjepalidhje123';
 
-// sample user, used for authentication
-const user = {
-  username: 'react',
-  password: 'express'
-};
 
-/**
- * Returns jwt token if valid username and password is provided
- * @param req
- * @param res
- * @param next
- * @returns {*}
- */
 function login(req, res, next) {
-  // Ideally you'll fetch this from the db
-  // Idea here was to show how jwt works with simplicity
-  if (req.body.username === user.username && req.body.password === user.password) {
-    const token = jwt.sign({
-      username: user.username
-    }, config.jwtSecret);
-    return res.json({
-      token,
-      username: user.username
-    });
-  }
+  const email = req.body.email.toLowerCase()
+  const password = sha256(PASSWORD_SALT + req.body.password).toString()
+  const remember = req.body.remember
+  User.find({ email: email, password: password }).lean().exec().then(userData => {
+    if (userData.length == 1) {
+      const token = jwt.sign({
+        email: email,
+        user_level: userData[0].user_level,
+        user_id: userData[0]._id,
+        name: userData[0].name,
+        surname: userData[0].surname,
+        gender: userData[0].gender,
+        city: userData[0].city,
+      }, JWT_SECRET, { expiresIn: remember ? "30d" : "24h" });
 
-  const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
-  return next(err);
+      return res.json({
+        token,
+        email: email,
+        user_level: userData[0].user_level,
+        user_id: userData[0]._id,
+        name: userData[0].name,
+        surname: userData[0].surname,
+        gender: userData[0].gender,
+        city: userData[0].city,
+        success: true
+      });
+    } else {
+      return res.json({
+        message: "Përdoruesi apo Fjalëkalimi i gabuar",
+        success: false
+      })
+    }
+  }).catch((e) => {
+    const err = new APIError(e.message, httpStatus.INTERNAL_SERVER_ERROR, true);
+    next(err);
+  })
 }
 
-/**
- * This is a protected route. Will return random number only if jwt token is provided in header.
- * @param req
- * @param res
- * @returns {*}
- */
-function getRandomNumber(req, res) {
-  // req.user is assigned by jwt middleware if valid token is provided
-  return res.json({
-    user: req.user,
-    num: Math.random() * 100
-  });
-}
 
-module.exports = { login, getRandomNumber };
+module.exports = { login };
