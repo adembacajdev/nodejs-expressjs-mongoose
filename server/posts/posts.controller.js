@@ -14,7 +14,8 @@ function createOne(req, res, next) {
         rating: req.body.rating,
         reviews: req.body.reviews,
         category: req.body.category,
-        created_by: req.body.created_by
+        created_by: req.body.created_by,
+        phone_number: req.body.phone_number
     })
 
     Post.find().lean().exec().then((name) => {
@@ -38,6 +39,7 @@ function updateOne(req, res, next) {
         data.rating = req.body.rating
         data.reviews = req.body.reviews
         data.category = req.body.category
+        data.phone_number = req.body.phone_number
         data.save()
             .then((savedPost) => {
                 res.json({ success: true, data: savedPost })
@@ -60,7 +62,7 @@ function deleteOne(req, res, next) {
 }
 
 function getAll(req, res, next) {
-    Post.find().select('_id title description price colors rating reviews category created_by').lean().exec().then((data) => {
+    Post.find().select('_id title description price colors rating reviews category phone_number created_by').lean().exec().then((data) => {
         res.json({ success: true, data })
     })
         .catch(e => {
@@ -70,7 +72,7 @@ function getAll(req, res, next) {
 }
 
 function getOne(req, res, next) {
-    Post.findOne({ _id: req.params.postId }).select('_id title description price colors rating reviews category created_by').lean().exec().then((data) => {
+    Post.findOne({ _id: req.params.postId }).select('_id title description price colors rating reviews category phone_number created_by').lean().exec().then((data) => {
         res.json({ success: true, data })
     })
         .catch(e => {

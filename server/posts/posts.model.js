@@ -37,6 +37,10 @@ const PostModel = new mongoose.Schema({
         type: String,//this should be an image
         required: true
     },
+    phone_number: {
+        type: Number,
+        required: true
+    },
     created_by:{ //E.g to link to another schema
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
