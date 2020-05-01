@@ -61,10 +61,10 @@ function getOne(req, res, next) {
     Category.findOne({ _id: req.params.categoryId }).select('_id name').lean().exec().then((data) => {
         res.json({ success: true, data })
     })
-    .catch(e => {
-        const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
-        next(err);
-    })
+        .catch(e => {
+            const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
+            next(err);
+        })
 }
 
 module.exports = { createOne, updateOne, deleteOne, getAll, getOne };

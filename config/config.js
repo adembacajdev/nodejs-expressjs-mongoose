@@ -38,7 +38,9 @@ const config = {
   mongo: {
     host: envVars.MONGO_HOST,
     port: envVars.MONGO_PORT
-  }
+  },
+  basePath: __dirname + '/..',
+  domain: envVars.DOMAIN,
 };
 
 module.exports = config;
