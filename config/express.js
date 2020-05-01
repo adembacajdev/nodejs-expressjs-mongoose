@@ -13,6 +13,7 @@ const winstonInstance = require('./winston');
 const routes = require('../index.route');
 const config = require('./config');
 const APIError = require('../server/helpers/APIError');
+const fileUpload = require('express-fileupload');
 
 const app = express();
 
@@ -45,6 +46,11 @@ if (config.env === 'development') {
     colorStatus: true // Color the status code (default green, 3XX cyan, 4XX yellow, 5XX red).
   }));
 }
+
+//fileUpload
+app.use('/public', express.static('public'))
+app.use(require('body-parser').urlencoded({ extended: true, limit: '100mb', parameterLimit: 1000000 }));
+app.use(fileUpload({ limits: { fileSize: 100 * 1024 * 1024 } }));
 
 // mount all routes on /api path
 app.use('/api', routes);

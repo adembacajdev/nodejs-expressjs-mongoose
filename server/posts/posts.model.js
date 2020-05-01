@@ -34,7 +34,7 @@ const PostModel = new mongoose.Schema({
         required: true
     },
     images: {
-        type: String,//this should be an image
+        type: [String],//this should be an image
         required: true
     },
     phone_number: {
