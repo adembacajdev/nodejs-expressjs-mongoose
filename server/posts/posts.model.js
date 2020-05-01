@@ -26,22 +26,24 @@ const PostModel = new mongoose.Schema({
         required: true
     },
     reviews: {
-        type: String, //this should be an array which contains _id of review
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Review",
         required: true
     },
     category: {
-        type: String,//this should be an category id,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Category",
         required: true
     },
     images: {
-        type: [String],//this should be an image
+        type: [String],
         required: true
     },
     phone_number: {
         type: Number,
         required: true
     },
-    created_by:{ //E.g to link to another schema
+    created_by:{
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true

@@ -8,6 +8,9 @@ const router = express.Router(); // eslint-disable-line new-cap
 router.route('/')
   .post(userCtrl.create)
 
+router.route('/uploadProfilePicture/:userId')
+  .post(userCtrl.uploadProfilePicture)
+
 router.route('/:userId')
   .get(userCtrl.getOne)
   .put(userCtrl.update)

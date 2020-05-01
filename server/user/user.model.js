@@ -20,10 +20,10 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
-  // photo: {
-  //   type: String,
-  //   default: null
-  // },
+  profile_picture: {
+    type: String,
+    default: null
+  },
   gender:{
     type: String,
     default: null

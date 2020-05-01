@@ -14,7 +14,7 @@ function create(req, res, next) {
     birthdate: req.body.birthdate,
     gender: req.body.gender,
     city: req.body.city,
-    // photo: req.body.photo,
+    profile_picture: req.body.profile_picture,
   });
 
   User.find({
@@ -44,7 +44,7 @@ function create(req, res, next) {
 
 function getOne(req, res, next) {
   User.findOne({ _id: req.params.userId })
-    .select('_id email name surname city birthdate gender ').lean().exec().then((data) => {
+    .select('_id email name surname city birthdate gender profile_picture').lean().exec().then((data) => {
       if (data) res.json({ success: true, data });
       else res.json({ success: false, data: "Nuk keni te drejte te shikoni kete profil" });
     }).catch(e => {
@@ -82,5 +82,29 @@ function deleteOne(req, res, next) {
   })
 }
 
+function uploadProfilePicture(req, res, next) {
+  User.findOne({ _id: req.params.userId }).then(async (data) => {
+    if (!data) return res.json({ success: false, message: "User record not found" });
+    const files = req.files;
+    const file = files['file'];
 
-module.exports = { create, getOne, update, deleteOne }
+    const filename = `${req.params.userId}${file.name}`
+    fs.writeFile(`${config.basePath}/public/profile/${filename}`, file.data, function (err) {
+      if (err) return res.json({ success: false, message: "Failed to write the picture." });
+
+      var photo = `${config.domain}/public/profile/${filename}`
+      User.findOneAndUpdate({ _id: req.params.userId }, { $set: { profile_picture: photo } }, { new: true }).select("_id profile_picture").then(savedUser => {
+        res.json({ success: true, data: savedUser })
+      }).catch(e => {
+        console.log("err", e)
+        res.json({ success: false, message: "Failed to update the record." })
+      })
+    });
+  }).catch(e => {
+    const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
+    next(err);
+  })
+}
+
+
+module.exports = { create, getOne, update, deleteOne, uploadProfilePicture }

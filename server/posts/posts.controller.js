@@ -65,28 +65,28 @@ function deleteOne(req, res, next) {
 }
 
 function getAll(req, res, next) {
-    const JWT_SECRET = 'lidhjepalidhje123';
-    const authHeader = req.headers.authorization;
-    if (authHeader) {
-        const token = authHeader.split(' ')[1];
-        jwt.verify(token, JWT_SECRET, (err, user) => {
-            if (err) {
-                return res.sendStatus(403);
-            }
-            res.json({ success: true })
-        });
-    } else {
-        return res.json({ success: false, message: 'Your request is unauthorizied' })
-    }
+    // const JWT_SECRET = 'lidhjepalidhje123';
+    // const authHeader = req.headers.authorization;
+    // if (authHeader) {
+    //     const token = authHeader.split(' ')[1];
+    //     jwt.verify(token, JWT_SECRET, (err, user) => {
+    //         if (err) {
+    //             return res.sendStatus(403);
+    //         }
+    //         res.json({ success: true })
+    //     });
+    // } else {
+    //     return res.json({ success: false, message: 'Your request is unauthorizied' })
+    // }
 
 
-    // Post.find().select('_id title description price colors rating reviews category phone_number images created_by').lean().exec().then((data) => {
-    //     res.json({ success: true, data })
-    // })
-    //     .catch(e => {
-    //         const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
-    //         next(err);
-    //     })
+    Post.find().select('_id title description price colors rating reviews category phone_number images created_by').lean().exec().then((data) => {
+        res.json({ success: true, data })
+    })
+        .catch(e => {
+            const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
+            next(err);
+        })
 }
 
 function getOne(req, res, next) {

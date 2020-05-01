@@ -14,6 +14,10 @@ const ReviewSchema = new mongoose.Schema({
     comment: {
         type: String,
         required: true
+    },
+    rating: {
+      type: mongoose.Schema.Types.Decimal128,
+      requires: true
     }
 })
 

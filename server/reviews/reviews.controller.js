@@ -6,7 +6,8 @@ function createOne(req, res, next) {
     const reviewModel = new Review({
         post_id: req.body.post_id,
         user_id: req.body.user_id,
-        comment: req.body.comment
+        comment: req.body.comment,
+        rating: req.body.rating
     })
 
     Review.find({ post_id: req.body.post_id }).lean().exec().then((post) => {
@@ -33,7 +34,7 @@ function deleteOne(req, res, next) {
 }
 
 function getAll(req, res, next) {
-    Review.find().select('_id post_id user_id comment').lean().exec().then((data) => {
+    Review.find().select('_id post_id user_id comment rating').lean().exec().then((data) => {
         res.json({ success: true, data })
     })
         .catch(e => {
@@ -43,7 +44,7 @@ function getAll(req, res, next) {
 }
 
 function getOne(req, res, next) {
-    Review.findOne({ _id: req.params.reviewId }).select('_id post_id user_id comment').lean().exec().then((data) => {
+    Review.findOne({ _id: req.params.reviewId }).select('_id post_id user_id comment rating').lean().exec().then((data) => {
         res.json({ success: true, data })
     })
         .catch(e => {
