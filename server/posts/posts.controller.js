@@ -78,6 +78,8 @@ function getAll(req, res, next) {
     // } else {
     //     return res.json({ success: false, message: 'Your request is unauthorizied' })
     // }
+    var query = {}
+    if (req.body.user_id) query.created_by = req.body.user_id
 
     const options = {
         page: req.params.page,
@@ -91,7 +93,7 @@ function getAll(req, res, next) {
         select: "_id title description price colors rating reviews category phone_number images created_by",
         sort: { _id: -1 }
     };
-    Post.paginate({}, options).then((data) => {
+    Post.paginate(query, options).then((data) => {
         res.json({ success: true, data: data })
     }).catch(e => {
         const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);

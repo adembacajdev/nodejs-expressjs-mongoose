@@ -34,16 +34,18 @@ function deleteOne(req, res, next) {
 }
 
 function getAll(req, res, next) {
+
+    var query = {};
+    if (req.body.user_id) query.user_id = req.body.user_id;
+    if (req.body.post_id) query.post_id = req.body.post_id;
     const options = {
         page: req.params.page,
         limit: req.params.limit,
-        collation: {
-            locale: 'en'
-        },
+        collation: { locale: 'en' },
         select: "_id post_id user_id comment rating",
         sort: { _id: -1 }
     };
-    Review.paginate({}, options).then((data) => {
+    Review.paginate(query, options).then((data) => {
         res.json({ success: true, data: data })
     }).catch(e => {
         const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);

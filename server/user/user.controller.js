@@ -53,7 +53,6 @@ function getOne(req, res, next) {
       const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
       next(err);
     })
-
 }
 
 function update(req, res, next) {

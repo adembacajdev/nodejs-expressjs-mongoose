@@ -36,6 +36,9 @@ function deleteOne(req, res, next) {
 }
 
 function getAll(req, res, next) {
+    var query = {}
+    if (req.body.user_id) query.user_id = req.body.user_id;
+    
     const options = {
         page: req.params.page,
         limit: req.params.limit,
@@ -45,7 +48,7 @@ function getAll(req, res, next) {
         select: "_id post_id user_id",
         sort: { _id: -1 }
     };
-    Favourite.paginate({}, options).then((data) => {
+    Favourite.paginate(query, options).then((data) => {
         res.json({ success: true, data: data })
     }).catch(e => {
         const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
