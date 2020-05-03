@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const PostModel = new mongoose.Schema({
     title: {
@@ -49,5 +50,7 @@ const PostModel = new mongoose.Schema({
       required: true
     },
 })
+
+PostModel.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Post', PostModel);

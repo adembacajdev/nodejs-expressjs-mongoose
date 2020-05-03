@@ -22,6 +22,7 @@ function login(req, res, next) {
         surname: userData[0].surname,
         gender: userData[0].gender,
         city: userData[0].city,
+        profile_picture: userData[0].profile_picture
       }, JWT_SECRET, { expiresIn: remember ? "30d" : "24h" });
 
       return res.json({
@@ -33,6 +34,7 @@ function login(req, res, next) {
         surname: userData[0].surname,
         gender: userData[0].gender,
         city: userData[0].city,
+        profile_picture: userData[0].profile_picture,
         success: true
       });
     } else {

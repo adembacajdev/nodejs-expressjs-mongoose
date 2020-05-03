@@ -2,6 +2,8 @@ const User = require('./user.model');
 const httpStatus = require('http-status');
 const APIError = require('../helpers/APIError');
 const sha256 = require('crypto-js/sha256');
+const fs = require('fs');
+const config = require('../../config/config');
 
 function create(req, res, next) {
   const PASSWORD_SALT = 'palidhje123';

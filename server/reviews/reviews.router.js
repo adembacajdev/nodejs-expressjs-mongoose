@@ -7,6 +7,8 @@ const router = express.Router(); // eslint-disable-line new-cap
 
 router.route('/')
     .post(revCtrl.createOne)
+
+router.route('/:limit/:page')
     .get(revCtrl.getAll)
 
 router.route('/:reviewId')

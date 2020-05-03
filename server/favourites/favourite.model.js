@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const FavouriteSchema = new mongoose.Schema({
     user_id:{ //E.g to link to another schema
@@ -13,4 +14,6 @@ const FavouriteSchema = new mongoose.Schema({
     },
 })
 
-module.exports = mongoose.model('Favourite', BagSchema);
+FavouriteSchema.plugin(mongoosePaginate);
+
+module.exports = mongoose.model('Favourite', FavouriteSchema);

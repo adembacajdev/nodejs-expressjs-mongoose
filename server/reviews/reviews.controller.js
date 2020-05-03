@@ -34,13 +34,21 @@ function deleteOne(req, res, next) {
 }
 
 function getAll(req, res, next) {
-    Review.find().select('_id post_id user_id comment rating').lean().exec().then((data) => {
-        res.json({ success: true, data })
-    })
-        .catch(e => {
-            const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
-            next(err);
-        })
+    const options = {
+        page: req.params.page,
+        limit: req.params.limit,
+        collation: {
+            locale: 'en'
+        },
+        select: "_id post_id user_id comment rating",
+        sort: { _id: -1 }
+    };
+    Review.paginate({}, options).then((data) => {
+        res.json({ success: true, data: data })
+    }).catch(e => {
+        const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
+        next(err);
+    });
 }
 
 function getOne(req, res, next) {

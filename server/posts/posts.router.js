@@ -7,6 +7,8 @@ const router = express.Router(); // eslint-disable-line new-cap
 
 router.route('/')
     .post(postCtrl.createOne)
+
+router.route('/:limit/:page')
     .get(postCtrl.getAll)
 
 router.route('/images/:postId')

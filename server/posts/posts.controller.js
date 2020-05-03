@@ -79,14 +79,24 @@ function getAll(req, res, next) {
     //     return res.json({ success: false, message: 'Your request is unauthorizied' })
     // }
 
-
-    Post.find().select('_id title description price colors rating reviews category phone_number images created_by').lean().exec().then((data) => {
-        res.json({ success: true, data })
-    })
-        .catch(e => {
-            const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
-            next(err);
-        })
+    const options = {
+        page: req.params.page,
+        limit: req.params.limit,
+        collation: {
+            locale: 'en'
+        },
+        // populate: [{ path: "reviews", select: "_id user_id post_id comment rating" },
+        // { path: "category", select: "_id name" },
+        // { path: "created_by", select: "_id name surname" }],
+        select: "_id title description price colors rating reviews category phone_number images created_by",
+        sort: { _id: -1 }
+    };
+    Post.paginate({}, options).then((data) => {
+        res.json({ success: true, data: data })
+    }).catch(e => {
+        const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
+        next(err);
+    });
 }
 
 function getOne(req, res, next) {
