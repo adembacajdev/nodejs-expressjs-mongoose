@@ -41,6 +41,10 @@ const UserSchema = new mongoose.Schema({
     minlength: 1,
     required: true,
   },
+  store_address: {
+    type: String,
+    required: true
+  },
   reset_token:{
     type: String,
     default: null

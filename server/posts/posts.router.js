@@ -6,18 +6,18 @@ const postCtrl = require('./posts.controller');
 const router = express.Router(); // eslint-disable-line new-cap
 
 router.route('/')
-    .post(postCtrl.createOne)
+    .post(validate(paramValidation.createPost), postCtrl.createOne)
 
 router.route('/:limit/:page')
-    .get(postCtrl.getAll)
+    .get(validate(paramValidation.getAllPosts), postCtrl.getAll)
 
 router.route('/images/:postId')
     .post(postCtrl.uploadProfilePicture);
 
 router.route('/:postId')
-    .get(postCtrl.getOne)
-    .put(postCtrl.updateOne)
-    .delete(postCtrl.deleteOne)
+    .get(validate(paramValidation.getOnePost), postCtrl.getOne)
+    .put(validate(paramValidation.updateOnePost), postCtrl.updateOne)
+    .delete(validate(paramValidation.deleteOnePost), postCtrl.deleteOne)
 
 
 module.exports = router;

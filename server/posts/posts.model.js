@@ -19,7 +19,7 @@ const PostModel = new mongoose.Schema({
         required: false
     },
     size: {
-        type: String,
+        type: [String],
         required: false
     },
     rating: {

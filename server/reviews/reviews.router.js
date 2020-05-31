@@ -6,13 +6,13 @@ const revCtrl = require('./reviews.controller');
 const router = express.Router(); // eslint-disable-line new-cap
 
 router.route('/')
-    .post(revCtrl.createOne)
+    .post(validate(paramValidation.createOneReview), revCtrl.createOne)
 
 router.route('/:limit/:page')
-    .get(revCtrl.getAll)
+    .get(validate(paramValidation.getAllReviews), revCtrl.getAll)
 
 router.route('/:reviewId')
-    .get(revCtrl.getOne)
-    .delete(revCtrl.deleteOne)
+    .get(validate(paramValidation.getOneReview), revCtrl.getOne)
+    .delete(validate(paramValidation.deleteOneReview), revCtrl.deleteOne)
 
 module.exports = router;

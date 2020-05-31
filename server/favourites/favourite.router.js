@@ -6,13 +6,13 @@ const favCtrl = require('./favourite.controller');
 const router = express.Router(); // eslint-disable-line new-cap
 
 router.route('/')
-    .post(favCtrl.createOne)
+    .post(validate(paramValidation.createFavourite), favCtrl.createOne)
 
 router.route('/:limit/:page')
-    .get(favCtrl.getAll)
+    .get(validate(paramValidation.getAllFavourites), favCtrl.getAll)
 
 router.route('/:favouriteId')
-    .get(favCtrl.getOne)
-    .delete(favCtrl.deleteOne)
+    .get(validate(paramValidation.getOneFavourite), favCtrl.getOne)
+    .delete(validate(paramValidation.deleteFavourite), avCtrl.deleteOne)
 
 module.exports = router;

@@ -6,14 +6,14 @@ const userCtrl = require('./user.controller');
 const router = express.Router(); // eslint-disable-line new-cap
 
 router.route('/')
-  .post(userCtrl.create)
+  .post(validate(paramValidation.createOneUser), userCtrl.create)
 
 router.route('/uploadProfilePicture/:userId')
   .post(userCtrl.uploadProfilePicture)
 
 router.route('/:userId')
-  .get(userCtrl.getOne)
-  .put(userCtrl.update)
-  .delete(userCtrl.deleteOne)
+  .get(validate(paramValidation.getOneUser), userCtrl.getOne)
+  .put(validate(paramValidation.updateOneUser), userCtrl.update)
+  .delete(validate(paramValidation.deleteOneUser), userCtrl.deleteOne)
 
 module.exports = router;

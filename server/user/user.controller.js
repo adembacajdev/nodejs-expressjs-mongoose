@@ -4,6 +4,7 @@ const APIError = require('../helpers/APIError');
 const sha256 = require('crypto-js/sha256');
 const fs = require('fs');
 const config = require('../../config/config');
+const jwt = require('jsonwebtoken');
 
 function create(req, res, next) {
   const PASSWORD_SALT = 'palidhje123';
@@ -40,32 +41,56 @@ function create(req, res, next) {
 }
 
 function getOne(req, res, next) {
-  User.findOne({ _id: req.params.userId })
-    .select('_id email name city profile_picture description number type').lean().exec().then((data) => {
-      if (data) res.json({ success: true, data });
-      else res.json({ success: false, data: "Nuk keni te drejte te shikoni kete profil" });
-    }).catch(e => {
-      const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
-      next(err);
-    })
+  const JWT_SECRET = 'lidhjepalidhje123';
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const token = authHeader.split(' ')[1];
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+      if (err) {
+        return res.sendStatus(403);
+      }
+      User.findOne({ _id: req.params.userId })
+        .select('_id email name city profile_picture description number type').lean().exec().then((data) => {
+          if (data) res.json({ success: true, data });
+          else res.json({ success: false, data: "Nuk keni te drejte te shikoni kete profil" });
+        }).catch(e => {
+          const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
+          next(err);
+        })
+    });
+  } else {
+    return res.json({ success: false, message: 'Your request is unauthorizied' })
+  }
 }
 
 function update(req, res, next) {
-  User.findOne({ _id: req.params.userId }).exec().then((data) => {
-    data.name = req.body.name
-    data.city = req.body.city
-    data.description = req.body.description
-    data.number = req.body.number
-    data.type = req.body.type
-    data.save().then(savedUser => {
-      res.json({ success: true, data: savedUser })
-    }).catch(e => {
-      res.json({ success: false, message: "Unable to update the department data." })
-    })
-  }).catch(e => {
-    const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
-    next(err);
-  })
+  const JWT_SECRET = 'lidhjepalidhje123';
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const token = authHeader.split(' ')[1];
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+      if (err) {
+        return res.sendStatus(403);
+      }
+      User.findOne({ _id: req.params.userId }).exec().then((data) => {
+        data.name = req.body.name
+        data.city = req.body.city
+        data.description = req.body.description
+        data.number = req.body.number
+        data.type = req.body.type
+        data.save().then(savedUser => {
+          res.json({ success: true, data: savedUser })
+        }).catch(e => {
+          res.json({ success: false, message: "Unable to update the department data." })
+        })
+      }).catch(e => {
+        const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
+        next(err);
+      })
+    });
+  } else {
+    return res.json({ success: false, message: 'Your request is unauthorizied' })
+  }
 }
 
 function deleteOne(req, res, next) {
