@@ -109,8 +109,8 @@ module.exports = {
   //Users
   createOneUser: {
     body: {
-      name: Joi.string.required(),
-      city: Joi.string.required(),
+      name: Joi.string().required(),
+      city: Joi.string().required(),
       profile_picture: Joi.string(),
       description: Joi.string().optional(),
       number: Joi.number().required(),
@@ -130,8 +130,8 @@ module.exports = {
       userId: Joi.string().regex(/^[0-9a-fA-F]{24}$/)
     },
     body: {
-      name: Joi.string.required(),
-      city: Joi.string.required(),
+      name: Joi.string().required(),
+      city: Joi.string().required(),
       profile_picture: Joi.string(),
       description: Joi.string().optional(),
       number: Joi.number().required(),

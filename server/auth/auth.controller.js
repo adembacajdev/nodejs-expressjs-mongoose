@@ -6,6 +6,22 @@ const User = require('../user/user.model');
 const sha256 = require('crypto-js/sha256');
 const PASSWORD_SALT = 'palidhje123';
 const JWT_SECRET = 'lidhjepalidhje123';
+// var nodemailer = require('nodemailer');
+
+// var transporter = nodemailer.createTransport({
+//   service: 'outlook',
+//   auth: {
+//     user: 'adibacaj@live.com',
+//     pass: 'bushmaster177'
+//   }
+// });
+
+// var mailOptions = {
+//   from: 'adibacaj@live.com',
+//   to: 'adem.bacaj1@gmail.com',
+//   subject: 'Test nodejs mail',
+//   text: 'That was easy!'
+// };
 
 
 function login(req, res, next) {
@@ -13,6 +29,13 @@ function login(req, res, next) {
   const password = sha256(PASSWORD_SALT + req.body.password).toString()
   const remember = req.body.remember
   User.find({ email: email, password: password }).lean().exec().then(userData => {
+    // transporter.sendMail(mailOptions, function(error, info){
+    //   if (error) {
+    //     console.log(error);
+    //   } else {
+    //     console.log('Email sent: ' + info.response);
+    //   }
+    // });
     if (userData.length == 1) {
       const token = jwt.sign({
         email: email,

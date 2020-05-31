@@ -13,6 +13,6 @@ router.route('/:limit/:page')
 
 router.route('/:favouriteId')
     .get(validate(paramValidation.getOneFavourite), favCtrl.getOne)
-    .delete(validate(paramValidation.deleteFavourite), avCtrl.deleteOne)
+    .delete(validate(paramValidation.deleteFavourite), favCtrl.deleteOne)
 
 module.exports = router;

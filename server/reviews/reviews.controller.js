@@ -69,7 +69,9 @@ function getAll(req, res, next) {
 }
 
 function getOne(req, res, next) {
-    Review.findOne({ _id: req.params.reviewId }).select('_id post_id user_id comment rating').lean().exec().then((data) => {
+    Review.findOne({ _id: req.params.reviewId })
+    .populate({ path: 'post_id', model: 'User', select: "_id name profile_picture"})
+    .select('_id post_id user_id comment rating created_at').lean().exec().then((data) => {
         res.json({ success: true, data })
     })
         .catch(e => {
