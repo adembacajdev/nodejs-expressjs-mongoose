@@ -16,25 +16,25 @@ function login(req, res, next) {
     if (userData.length == 1) {
       const token = jwt.sign({
         email: email,
-        user_level: userData[0].user_level,
         user_id: userData[0]._id,
         name: userData[0].name,
-        surname: userData[0].surname,
-        gender: userData[0].gender,
         city: userData[0].city,
-        profile_picture: userData[0].profile_picture
+        profile_picture: userData[0].profile_picture,
+        description: userData[0].description,
+        number: userData[0].number,
+        type: userData[0].type
       }, JWT_SECRET, { expiresIn: remember ? "30d" : "24h" });
 
       return res.json({
         token,
         email: email,
-        user_level: userData[0].user_level,
         user_id: userData[0]._id,
         name: userData[0].name,
-        surname: userData[0].surname,
-        gender: userData[0].gender,
         city: userData[0].city,
         profile_picture: userData[0].profile_picture,
+        description: userData[0].description,
+        number: userData[0].number,
+        type: userData[0].type,
         success: true
       });
     } else {

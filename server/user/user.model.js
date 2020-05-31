@@ -8,25 +8,21 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  surname: {
-    type: String,
-    required: true
-  },
   city: {
     type: String,
     required: true
-  },
-  birthdate:{
-    type: Date,
-    default: null
   },
   profile_picture: {
     type: String,
     default: null
   },
-  gender:{
+  description: {
     type: String,
-    default: null
+    requird: true
+  },
+  number: {
+    type: Number,
+    required: true
   },
   email: {
     type: String,
@@ -38,6 +34,12 @@ const UserSchema = new mongoose.Schema({
     minlength:64,
     maxlength: 64,
     required: true
+  },
+  type: {
+    type: Number,
+    maxlength: 1,
+    minlength: 1,
+    required: true,
   },
   reset_token:{
     type: String,

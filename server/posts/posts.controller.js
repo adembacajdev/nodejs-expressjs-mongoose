@@ -6,80 +6,108 @@ const config = require('../../config/config');
 const jwt = require('jsonwebtoken');
 
 function createOne(req, res, next) {
-    const postModel = new Post({
-        title: req.body.title,
-        description: req.body.description,
-        price: req.body.price,
-        colors: req.body.colors,
-        size: req.body.size,
-        rating: req.body.rating,
-        reviews: req.body.reviews,
-        category: req.body.category,
-        created_by: req.body.created_by,
-        phone_number: req.body.phone_number,
-        images: req.body.images
-    })
-
-    Post.find().lean().exec().then((name) => {
-        postModel.save()
-            .then((savedPost) => {
-                res.json({ success: true, data: savedPost })
+    const JWT_SECRET = 'lidhjepalidhje123';
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+        const token = authHeader.split(' ')[1];
+        jwt.verify(token, JWT_SECRET, (err, user) => {
+            if (err) {
+                return res.sendStatus(403);
+            }
+            const postModel = new Post({
+                title: req.body.title,
+                description: req.body.description,
+                price: req.body.price,
+                colors: req.body.colors,
+                size: req.body.size,
+                rating: req.body.rating,
+                reviews: req.body.reviews,
+                category: req.body.category,
+                created_by: req.body.created_by,
+                phone_number: req.body.phone_number,
+                images: req.body.images,
+                type: req.body.type,
+                is_active: false,
             })
-            .catch(e => {
-                const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
-                next(err);
-            });
-    })
+
+            Post.find().lean().exec().then((name) => {
+                postModel.save()
+                    .then((savedPost) => {
+                        res.json({ success: true, data: savedPost })
+                    })
+                    .catch(e => {
+                        const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
+                        next(err);
+                    });
+            })
+        });
+    } else {
+        return res.json({ success: false, message: 'Your request is unauthorizied' })
+    }
 }
 
 function updateOne(req, res, next) {
-    Post.findOne({ _id: req.params.postId }).exec().then((data) => {
-        data.title = req.body.title
-        data.description = req.body.description
-        data.price = req.body.price
-        data.colors = req.body.colors
-        data.rating = req.body.rating
-        data.reviews = req.body.reviews
-        data.category = req.body.category
-        data.phone_number = req.body.phone_number
-        data.images = req.body.images
-        data.save()
-            .then((savedPost) => {
-                res.json({ success: true, data: savedPost })
+    const JWT_SECRET = 'lidhjepalidhje123';
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+        const token = authHeader.split(' ')[1];
+        jwt.verify(token, JWT_SECRET, (err, user) => {
+            if (err) {
+                return res.sendStatus(403);
+            }
+            Post.findOne({ _id: req.params.postId }).exec().then((data) => {
+                data.title = req.body.title
+                data.description = req.body.description
+                data.price = req.body.price
+                data.colors = req.body.colors
+                data.rating = req.body.rating
+                data.reviews = req.body.reviews
+                data.category = req.body.category
+                data.phone_number = req.body.phone_number
+                data.images = req.body.images
+                data.is_active = req.body.is_active
+                data.type = req.body.type
+                data.save()
+                    .then((savedPost) => {
+                        res.json({ success: true, data: savedPost })
+                    })
+                    .catch(e => {
+                        res.json({ success: false, message: "Unable to update the Post." })
+                    })
             })
-            .catch(e => {
-                res.json({ success: false, message: "Unable to update the Category." })
-            })
-    })
+        });
+    } else {
+        return res.json({ success: false, message: 'Your request is unauthorizied' })
+    }
 }
 
 function deleteOne(req, res, next) {
-    Post.findOneAndRemove({ _id: req.params.postId }).then(data => {
-        if (data) res.json({ success: true, message: "Të dhënat u fshinë me sukses." });
-        else res.json({ success: false, message: "Rekordi nuk ekzistion." });
-    })
-        .catch(e => {
-            const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
-            next(err);
-        })
+    const JWT_SECRET = 'lidhjepalidhje123';
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+        const token = authHeader.split(' ')[1];
+        jwt.verify(token, JWT_SECRET, (err, user) => {
+            if (err) {
+                return res.sendStatus(403);
+            }
+            Post.findOneAndRemove({ _id: req.params.postId }).then(data => {
+                if (data) res.json({ success: true, message: "Të dhënat u fshinë me sukses." });
+                else res.json({ success: false, message: "Rekordi nuk ekzistion." });
+            })
+                .catch(e => {
+                    const err = new APIError(e.message, httpStatus.METHOD_NOT_ALLOWED, true);
+                    next(err);
+                })
+        });
+    } else {
+        return res.json({ success: false, message: 'Your request is unauthorizied' })
+    }
 }
 
 function getAll(req, res, next) {
-    // const JWT_SECRET = 'lidhjepalidhje123';
-    // const authHeader = req.headers.authorization;
-    // if (authHeader) {
-    //     const token = authHeader.split(' ')[1];
-    //     jwt.verify(token, JWT_SECRET, (err, user) => {
-    //         if (err) {
-    //             return res.sendStatus(403);
-    //         }
-    //         res.json({ success: true })
-    //     });
-    // } else {
-    //     return res.json({ success: false, message: 'Your request is unauthorizied' })
-    // }
     var query = {}
-    if (req.body.user_id) query.created_by = req.body.user_id
+    if (req.body.user_id) query.created_by = req.body.user_id;
+    if (req.body.is_active) query.is_active = req.body.is_active;
 
     const options = {
         page: req.params.page,
@@ -90,7 +118,7 @@ function getAll(req, res, next) {
         // populate: [{ path: "reviews", select: "_id user_id post_id comment rating" },
         // { path: "category", select: "_id name" },
         // { path: "created_by", select: "_id name surname" }],
-        select: "_id title description price colors rating reviews category phone_number images created_by",
+        select: "_id title description price colors rating reviews category phone_number images type created_by is_active",
         sort: { _id: -1 }
     };
     Post.paginate(query, options).then((data) => {
@@ -102,7 +130,7 @@ function getAll(req, res, next) {
 }
 
 function getOne(req, res, next) {
-    Post.findOne({ _id: req.params.postId }).select('_id title description price colors rating reviews category phone_number images created_by').lean().exec().then((data) => {
+    Post.findOne({ _id: req.params.postId }).select('_id title description price colors rating reviews category phone_number images type created_by is_active').lean().exec().then((data) => {
         res.json({ success: true, data })
     })
         .catch(e => {
@@ -160,3 +188,22 @@ function uploadProfilePicture(req, res, next) {
 }
 
 module.exports = { createOne, updateOne, deleteOne, getAll, getOne, uploadProfilePicture };
+
+
+
+//isAuthorized
+
+
+    // const JWT_SECRET = 'lidhjepalidhje123';
+    // const authHeader = req.headers.authorization;
+    // if (authHeader) {
+    //     const token = authHeader.split(' ')[1];
+    //     jwt.verify(token, JWT_SECRET, (err, user) => {
+    //         if (err) {
+    //             return res.sendStatus(403);
+    //         }
+    //         res.json({ success: true })
+    //     });
+    // } else {
+    //     return res.json({ success: false, message: 'Your request is unauthorizied' })
+    // }

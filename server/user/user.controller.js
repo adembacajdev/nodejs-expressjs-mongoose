@@ -12,23 +12,18 @@ function create(req, res, next) {
     email: req.body.email.toLowerCase(),
     password: sha256(PASSWORD_SALT + req.body.password),
     name: req.body.name,
-    surname: req.body.surname,
-    birthdate: req.body.birthdate,
-    gender: req.body.gender,
     city: req.body.city,
     profile_picture: req.body.profile_picture,
+    description: req.body.description,
+    number: req.body.number,
+    type: req.body.type
   });
 
-  User.find({
-    $or: [
-      { email: req.body.email.toLowerCase() },
-      { email: { "$ne": req.body.email.toLowerCase() } }
-    ]
-  }).lean().exec().then((user) => {
+  User.find({ email: req.body.email.toLowerCase() }).lean().exec().then((user) => {
     if (user.length > 0) {
       res.json({
         success: false,
-        message: "Përdoruesi me email apo numër leternjoftimi të njëjtë ekziston."
+        message: "Përdoruesi me email të njëjtë ekziston."
       })
     } else {
       userModel.save()
@@ -46,7 +41,7 @@ function create(req, res, next) {
 
 function getOne(req, res, next) {
   User.findOne({ _id: req.params.userId })
-    .select('_id email name surname city birthdate gender profile_picture').lean().exec().then((data) => {
+    .select('_id email name city profile_picture description number type').lean().exec().then((data) => {
       if (data) res.json({ success: true, data });
       else res.json({ success: false, data: "Nuk keni te drejte te shikoni kete profil" });
     }).catch(e => {
@@ -58,10 +53,10 @@ function getOne(req, res, next) {
 function update(req, res, next) {
   User.findOne({ _id: req.params.userId }).exec().then((data) => {
     data.name = req.body.name
-    data.surname = req.body.surname
     data.city = req.body.city
-    data.birthdate = req.body.birthdate
-    data.gender = req.body.gender
+    data.description = req.body.description
+    data.number = req.body.number
+    data.type = req.body.type
     data.save().then(savedUser => {
       res.json({ success: true, data: savedUser })
     }).catch(e => {

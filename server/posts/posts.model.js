@@ -4,51 +4,62 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const PostModel = new mongoose.Schema({
     title: {
         type: String,
-        required: true
+        required: false
     },
     description: {
         type: String,
-        required: true
+        required: false
     },
     price: {
         type: Number,
-        required: true,
+        required: false,
     },
     colors: {
         type: [String],
-        required: true
+        required: false
     },
     size: {
         type: String,
-        required: true
+        required: false
     },
     rating: {
         type: Number,
-        required: true
+        required: false
     },
     reviews: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: [mongoose.Schema.Types.ObjectId],
         ref: "Review",
-        required: true
+        required: false
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category",
-        required: true
+        required: false
     },
     images: {
         type: [String],
-        required: true
+        required: false
     },
     phone_number: {
         type: Number,
-        required: true
+        required: false
     },
-    created_by:{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true
+    type: {
+        type: Number,
+        required: true,
+        maxlength: 1,
+        minlength: 1
     },
+    created_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: false
+    },
+    is_active: {
+        type: Boolean,
+        required: false,
+        default: false
+    }
 })
 
 PostModel.plugin(mongoosePaginate);
